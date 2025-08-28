@@ -6,7 +6,6 @@ import plotly.graph_objects as go
 from numpy import log, sqrt, exp  # Make sure to import these
 import matplotlib.pyplot as plt
 import seaborn as sns
-import yfinance as yf  # Add yfinance import
 
 #######################
 # Page configuration
@@ -116,25 +115,6 @@ class BlackScholes:
         self.put_gamma = self.call_gamma
 
         return call_price, put_price
-
-# Function to fetch stock data
-def get_stock_data(symbol):
-    try:
-        ticker = yf.Ticker(symbol)
-        data = ticker.history(period="1y")
-        current_price = data['Close'].iloc[-1]
-        
-        # Calculate historical volatility (annualized)
-        returns = data['Close'].pct_change().dropna()
-        volatility = returns.std() * np.sqrt(252)  # 252 trading days per year
-        
-        return current_price, volatility, True
-    except:
-        return None, None, False
-
-# Function to generate heatmaps
-# ... your existing imports and BlackScholes class definition ...
-
 
 # Sidebar for User Inputs
 with st.sidebar:
@@ -253,4 +233,5 @@ with col1:
 with col2:
     st.subheader("Put Price Heatmap")
     _, heatmap_fig_put = plot_heatmap(bs_model, spot_range, vol_range, strike)
+
     st.pyplot(heatmap_fig_put)
